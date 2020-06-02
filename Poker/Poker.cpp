@@ -1,0 +1,15 @@
+#include "stdafx.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <time.h>
+#include <list>
+#include <iostream>
+#include <algorithm>
+#include <functional>
+#include "table.h"
+#include "object.h"
+#include "animation.h"
+#include "player.h"
+#include "opponent.h"
+#include "card.h"
+#include "graphics.h"
