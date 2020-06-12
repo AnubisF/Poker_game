@@ -137,26 +137,26 @@ void Table::rysujPlansze(sf::RenderWindow& app) {
 	napisz(app, sf::Vector2f(50, 50), napis);
 
 }
-void Table::pause(sf::RenderWindow& app) {
-	Graphics graphics;
+void Table::spause(sf::RenderWindow& app) {
+	Util util;
 	sf::Sprite temp(pause);
 	temp.setPosition(250, 280);
 	app.draw(temp);
 	app.display();
-	graphics.delay(200);
+	util.delay(200);
 	do {} while (!sf::Keyboard::isKeyPressed(sf::Keyboard::P));
-	graphics.delay(200);
+	util.delay(200);
 }
-void Table::gameOver(sf::RenderWindow& app) {
+void Table::sgameOver(sf::RenderWindow& app) {
 	std::cout << "game over" << std::endl;
-	Graphics graphics;
+	Util util;
 	sf::Sprite temp(gameOver);
 	temp.setPosition(325, 250);
 	app.draw(temp);
 	app.display();
-	graphics.delay(1500);
+	util.delay(1500);
 }
-bool Table::setCzcionka(sf::String fontname, int rozmiar, sf::Color kolor) {
+bool Table::setFont(sf::String fontname, int rozmiar, sf::Color kolor) {
 	if (!font.loadFromFile(fontname)) {
 		cout << "Nie udalo sie wczytac czcionki" << endl;
 		return false;
@@ -207,5 +207,4 @@ void Table::playSound(std::string plik) {
 	while (sound.getStatus() == sf::Sound::Playing)
 	{
 	}
-
 }

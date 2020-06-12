@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class Table
+class Util
 {
 private:
 	sf::Font font;
@@ -15,8 +15,8 @@ private:
 	} zone[50];
 
 public:
-	Table();
-	~Table();
+	Util();
+	~Util();
 
 	// functions responsible for time
 	void restartTime() { TotalSecondsTime += clock.getElapsedTime().asSeconds(); clock.restart(); }

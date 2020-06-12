@@ -1,10 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Graphics.h"
+#include "Util.h"
 #include "Object.h"
 
 class Table
 {
+
 private:
 	sf::Texture gameOver, pause, menu, textTlo, textPanel, textChips;
 	sf::Sprite tlo, panel, chips[5];
@@ -21,8 +22,8 @@ private:
 public:
 	Table();
 	~Table();
-	void pause(sf::RenderWindow&);
-	void gameOver(sf::RenderWindow&);
+	void spause(sf::RenderWindow&);
+	void sgameOver(sf::RenderWindow&);
 
 	void youwon(sf::RenderWindow&);
 	void youlose(sf::RenderWindow&);
@@ -40,7 +41,7 @@ public:
 	void noweRozdanie();
 	void rysujPlansze(sf::RenderWindow&);
 	// funkcje odpowiedzialne za czcionki i napisy
-	bool setCzcionka(sf::String, int, sf::Color);
+	bool setFont(sf::String, int, sf::Color);
 	void napisz(sf::RenderWindow&, sf::Vector2f, sf::String);
 	void playSound(std::string);
 	void delay(int htmsec) {

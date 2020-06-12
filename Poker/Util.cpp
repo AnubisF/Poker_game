@@ -1,26 +1,26 @@
 #include "stdafx.h"
-#include "Graphics.h"
+#include "Util.h"
 #include <iostream>
 
 using namespace std;
 
-Table::Table()
+Util::Util()
 {
 }
 
 
-Table::~Table()
+Util::~Util()
 {
 }
 
-void Table::delay(int htmsec) {
+void Util::delay(int htmsec) {
 	sf::Clock clockTemp;
 	clockTemp.restart();
 	do {
 	} while (clockTemp.getElapsedTime().asMilliseconds() < htmsec);
 }
 
-void Table::setZone(int whichZone, int x0, int y0, int x1, int y1) {
+void Util::setZone(int whichZone, int x0, int y0, int x1, int y1) {
 	zone[whichZone].x0 = x0;
 	zone[whichZone].y0 = y0;
 	zone[whichZone].x1 = x1;
@@ -28,7 +28,7 @@ void Table::setZone(int whichZone, int x0, int y0, int x1, int y1) {
 	zone[whichZone].active = true;
 }
 
-int Table::checkZones(sf::RenderWindow& app) {
+int Util::checkZones(sf::RenderWindow& app) {
 	int whichZone = -1;
 	sf::Vector2f MousePosition;
 	MousePosition = sf::Vector2f(sf::Mouse::getPosition(app).x, sf::Mouse::getPosition(app).y);

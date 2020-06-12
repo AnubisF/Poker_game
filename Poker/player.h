@@ -53,7 +53,7 @@ public:
 	}
 
 	int getCard(int whichCard) { return card[whichCard]; }
-	void setKarta(int whichCard, int whatCard) { card[whichCard] = whatCard; }
+	void setCard(int whichCard, int whatCard) { card[whichCard] = whatCard; }
 	void update()
 	{
 	}
