@@ -42,7 +42,7 @@ public:
 	void rysujPlansze(sf::RenderWindow&);
 	// funkcje odpowiedzialne za czcionki i napisy
 	bool setFont(sf::String, int, sf::Color);
-	void napisz(sf::RenderWindow&, sf::Vector2f, sf::String);
+	void write(sf::RenderWindow&, sf::Vector2f, sf::String);
 	void playSound(std::string);
 	void delay(int htmsec) {
 		sf::Clock clockTemp;

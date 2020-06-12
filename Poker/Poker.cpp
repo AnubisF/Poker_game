@@ -14,11 +14,11 @@
 #include "Cards.h"
 #include "Util.h"
 
-void mixCards(int*, Player&, Opponent&);
+void mixCards(int*, Player &, Opponent &);
 void playSound(std::string);
-int ai(sf::RenderWindow&, Player&, Opponent&, Table*, Cards* cards, Animation*, int*, int, sf::String&);
-void drawAll(sf::RenderWindow&, std::list<Object*>, Table*);
-void checkCards(Player&, Opponent&, std::string, std::string&, int&, int&, int&, int*);
+int ai(sf::RenderWindow &, Player &, Opponent &, Table *, Cards *cards, Animation *, int*, int, sf::String&);
+void drawAll(sf::RenderWindow&, std::list<Object*>, Table *);
+void checkCards(Player &, Opponent &, std::string, std::string&, int&, int&, int&, int*);
 void delay(int);
 
 using namespace sf;
@@ -42,8 +42,8 @@ int main()
 	RenderWindow app(VideoMode(ScreenWidth, ScreenHeight), "SFML JNXEngine v1.0");
 	app.setFramerateLimit(60);
 
-	Table* Table = new Table();
-	Table->setFont("BornAddict.ttf", 24, sf::Color::White);
+	Table *table = new Table();
+	table->setFont("BornAddict.ttf", 24, sf::Color::White);
 
 	Texture t2, tCards, tCardBack;
 	t2.loadFromFile("images/opponent.png");
@@ -117,8 +117,8 @@ int main()
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape))		app.close();
-		if (Keyboard::isKeyPressed(Keyboard::P))			Table->spause(app);
-		if (Keyboard::isKeyPressed(Keyboard::G))			Table->sgameOver(app);
+		if (Keyboard::isKeyPressed(Keyboard::P))			table->spause(app);
+		if (Keyboard::isKeyPressed(Keyboard::G))			table->sgameOver(app);
 
 		selectedZone = myUtil.checkZones(app);
 		if (selectedZone == 1 && round != 5) {	// rzucasz cards
@@ -126,32 +126,32 @@ int main()
 			for (int i = 0; i < 5; i++) {
 				cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 				objects.push_back(&cards[i + 5]);
-				drawAll(app, objects, Table);
+				drawAll(app, objects, table);
 			}
 			playSound("images/you_lose.ogg");
-			Table->rzucKarty(app);
+			table->rzucKarty(app);
 			opponent.settings(sOpponentWin, 480, 100);
 			objects.push_back(&opponent);
-			drawAll(app, objects, Table);
+			drawAll(app, objects, table);
 			myUtil.delay(200);
 			round = 5;
 		}
 		if (selectedZone == 2 && round == 1) {		// pierwsze sprawdzenie kart
-			AI_reaction = ai(app, player, opponent, Table, cards, sCard, talia, round, wiadomosc);
+			AI_reaction = ai(app, player, opponent, table, cards, sCard, talia, round, wiadomosc);
 			if (AI_reaction == AI_ThrowCards) {
 				// ods³oñ cards opponenta
 				for (int i = 0; i < 5; i++) {
 					cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 					objects.push_back(&cards[i + 5]);
-					drawAll(app, objects, Table);
+					drawAll(app, objects, table);
 				}
 				opponent.settings(sOpponentDefeat, 480, 100);
 				objects.push_back(&opponent);
 				round = 5;
 				playSound("images/you_win.ogg");
 				for (int i = 0; i < 25; i++)
-					drawAll(app, objects, Table);
-				Table->AI_RzucilKarty(app);
+					drawAll(app, objects, table);
+				table->AI_RzucilKarty(app);
 			}
 			else
 			{
@@ -161,21 +161,21 @@ int main()
 
 		//		sprawdz opponenta, nastepna runda
 		if (selectedZone == 2 && AI_reaction != AI_increasesRate && (round == 2 || round == 3)) {
-			AI_reaction = ai(app, player, opponent, Table, cards, sCard, talia, 2, wiadomosc);
+			AI_reaction = ai(app, player, opponent, table, cards, sCard, talia, 2, wiadomosc);
 			if (AI_reaction == AI_ThrowCards) {
 				// ods³oñ cards opponenta
 				for (int i = 0; i < 5; i++) {
 					cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 					objects.push_back(&cards[i + 5]);
-					drawAll(app, objects, Table);
+					drawAll(app, objects, table);
 				}
 				opponent.settings(sOpponentDefeat, 480, 100);
 				objects.push_back(&opponent);
 				round = 5;
 				playSound("images/you_win.ogg");
 				for (int i = 0; i < 25; i++)
-					drawAll(app, objects, Table);
-				Table->AI_RzucilKarty(app);
+					drawAll(app, objects, table);
+				table->AI_RzucilKarty(app);
 			}
 			else
 			{
@@ -184,7 +184,7 @@ int main()
 		}
 
 		if (wiadomosc.getSize() > 5 && round == 2 && AI_reaction != AI_increasesRate) {
-			Table->napisz(app, sf::Vector2f(370, 700), wiadomosc);
+			table->write(app, sf::Vector2f(370, 700), wiadomosc);
 			app.display();
 			delay(2200);
 			wiadomosc = "";
@@ -196,25 +196,25 @@ int main()
 			for (int i = 0; i < 5; i++) {
 				cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 				objects.push_back(&cards[i + 5]);
-				drawAll(app, objects, Table);
+				drawAll(app, objects, table);
 			}
-			AI_reaction = ai(app, player, opponent, Table, cards, sCard, talia, 3, wiadomosc);
+			AI_reaction = ai(app, player, opponent, table, cards, sCard, talia, 3, wiadomosc);
 			if (AI_reaction == Draw_Win) {
 				playSound("images/you_win.ogg");
 				opponent.settings(sOpponentDefeat, 480, 100);
 				objects.push_back(&opponent);
-				drawAll(app, objects, Table);
-				Table->youwon(app);
+				drawAll(app, objects, table);
+				table->youwon(app);
 			}
 			else if (AI_reaction == Draw_Score) {
-				Table->draw(app);
+				table->draw(app);
 			}
 			else if (AI_reaction == Draw_Defeat) {
 				playSound("images/you_lose.ogg");
 				opponent.settings(sOpponentWin, 480, 100);
 				objects.push_back(&opponent);
-				drawAll(app, objects, Table);
-				Table->youlose(app);
+				drawAll(app, objects, table);
+				table->youlose(app);
 			}
 
 			round = 5;
@@ -242,7 +242,7 @@ int main()
 				objects.push_back(&cards[i]);
 				objects.push_back(&cards[i + 5]);
 			}
-			Table->noweRozdanie();
+			table->noweRozdanie();
 			round = 1;
 		}
 		if (selectedZone >= 8 && selectedZone <= 12 && round == 2) {
@@ -262,29 +262,29 @@ int main()
 				}
 			}
 		}
-		if (selectedZone == 13 && (round == 2 || round == 1 || round == 3))	Table->addToRate(5);
-		if (selectedZone == 14 && (round == 2 || round == 1 || round == 3))	Table->addToRate(10);
-		if (selectedZone == 15 && (round == 2 || round == 1 || round == 3))	Table->addToRate(20);
-		if (selectedZone == 16 && (round == 2 || round == 1 || round == 3))	Table->addToRate(50);
-		if (selectedZone == 13 && round == 4)	Table->addedToRate(5);
-		if (selectedZone == 14 && round == 4)	Table->addedToRate(10);
-		if (selectedZone == 15 && round == 4)	Table->addedToRate(20);
-		if (selectedZone == 16 && round == 4)	Table->addedToRate(50);
+		if (selectedZone == 13 && (round == 2 || round == 1 || round == 3))	table->addToRate(5);
+		if (selectedZone == 14 && (round == 2 || round == 1 || round == 3))	table->addToRate(10);
+		if (selectedZone == 15 && (round == 2 || round == 1 || round == 3))	table->addToRate(20);
+		if (selectedZone == 16 && (round == 2 || round == 1 || round == 3))	table->addToRate(50);
+		if (selectedZone == 13 && round == 4)	table->addedToRate(5);
+		if (selectedZone == 14 && round == 4)	table->addedToRate(10);
+		if (selectedZone == 15 && round == 4)	table->addedToRate(20);
+		if (selectedZone == 16 && round == 4)	table->addedToRate(50);
 		if (AI_reaction == AI_increasesRate) {
-			if (Table->getRateAI() == Table->getPlayerRate()) {
+			if (table->getRateAI() == table->getPlayerRate()) {
 				AI_reaction = 0;
 			}
-			if (Table->getRateAI() < Table->getPlayerRate()) {
+			if (table->getRateAI() < table->getPlayerRate()) {
 				AI_reaction = 0;
-				Table->raiseRate();
+				table->raiseRate();
 			}
 		}
-		drawAll(app, objects, Table);
+		drawAll(app, objects, table);
 		myUtil.delay(40);
 	}
 	return 0;
 }
-void drawAll(sf::RenderWindow& app, std::list<Object*> objects, Table* Table) {
+void drawAll(sf::RenderWindow& app, std::list<Object*> objects, Table *table) {
 	for (auto i = objects.begin(); i != objects.end();)
 	{
 		Object* e = *i;
@@ -297,12 +297,12 @@ void drawAll(sf::RenderWindow& app, std::list<Object*> objects, Table* Table) {
 
 	// rysuj
 	app.clear();
-	Table->rysujPlansze(app);
+	table->rysujPlansze(app);
 	for (auto i : objects)
 		i->draw(app);
 	app.display();
 }
-int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* Table, Cards* cards, Animation* sCard, int* talia, int runda, sf::String& wiadomosc) {
+int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, Cards *cards, Animation *sCard, int* talia, int runda, sf::String& wiadomosc) {
 	int cardsDoWymiany[5]; // które cards wymieniæ = 0
 	std::string coMasz = "nic";			// tutaj: para, dwie pary, trojka, trojka i para
 	std::string czyStrit = "nic";		// tutaj: strit, prawie strit (4 cards takie same)
@@ -332,12 +332,12 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* Table, 
 		std::cout << "RUNDA 1" << std::endl;
 		if (coMasz == "nic" && (rand() % 3) == 1)
 			return AI_ThrowCards;	// nic nie ma, wiec rzucam cards
-		if (coMasz == "nic" && Table->getPlayerRate() > 50 && (rand() % 2) == 1)
+		if (coMasz == "nic" && table->getPlayerRate() > 50 && (rand() % 2) == 1)
 			return AI_ThrowCards;	// nic nie ma, a zawodnik sporo postawil
 
-		if (Table->getPlayerRate() > 10) {
+		if (table->getPlayerRate() > 10) {
 			// player coœ wrzuci³ na stó³ wiêc trzeba wyrównaæ
-			if (Table->AI_equalRate() == false) {
+			if (table->AI_equalRate() == false) {
 				// za ma³o geldów
 	//			std::cout << "AI NIE wyrownuje stawki i rzuca kartami" << std::endl;
 				return AI_ThrowCards;
@@ -348,7 +348,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* Table, 
 		{
 
 			std::cout << "AI podbija stawke o " << ileZagrac << std::endl;
-			Table->AI_raiseRate(app, ileZagrac);
+			table->AI_raiseRate(app, ileZagrac);
 			for (int i = 0; i < 5; i++) {
 				if (cardsDoWymiany[i] == -1) {
 					tempk++;
@@ -383,7 +383,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* Table, 
 			return AI_ThrowCards;	// nic nie ma, wiec rzucam cards
 
 		// wyrownaj stawke
-		if (Table->AI_equalRate() == false) {
+		if (table->AI_equalRate() == false) {
 			// za ma³o geldów
 			std::cout << "runda 2 AI NIE wyrownuje stawki i rzuca kartami" << std::endl;
 			return AI_ThrowCards;
@@ -394,7 +394,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* Table, 
 		if (ileZagrac > 0)
 		{
 			std::cout << "runda2 AI podbija stawke o " << ileZagrac << std::endl;
-			Table->AI_raiseRate(app, ileZagrac);
+			table->AI_raiseRate(app, ileZagrac);
 			return AI_increasesRate;
 		}
 

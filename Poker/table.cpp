@@ -44,8 +44,8 @@ void Table::AI_raiseRate(sf::RenderWindow& app, int howMuchToAdd) {
 		OponentRate += howMuchToAdd;
 		OpponentCash -= howMuchToAdd;
 		Bank = PlayerRate + OponentRate;
-		sf::String napis = "The opponent raises the rate " + std::to_string(howMuchToAdd);
-		napisz(app, sf::Vector2f(370, 700), napis);
+		sf::String title = "The opponent raises the rate " + std::to_string(howMuchToAdd);
+		write(app, sf::Vector2f(370, 700), title);
 		app.display();
 		delay(1500);
 	}
@@ -101,16 +101,16 @@ void Table::noweRozdanie() {
 void Table::rzucKarty(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	OpponentCash += Bank;
-	sf::String napis = "You threw the cards. Opponent wins " + to_string(Bank);
-	napisz(app, sf::Vector2f(370, 700), napis);
+	sf::String title = "You threw the cards. Opponent wins " + to_string(Bank);
+	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	//	delay(2500);
 }
 void Table::AI_RzucilKarty(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += Bank;
-	sf::String napis = "The opponent threw the cards. You won " + to_string(Bank);
-	napisz(app, sf::Vector2f(370, 700), napis);
+	sf::String title = "The opponent threw the cards. You won " + to_string(Bank);
+	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	delay(500);
 }
@@ -121,20 +121,20 @@ void Table::rysujPlansze(sf::RenderWindow& app) {
 	app.draw(chips[1]);
 	app.draw(chips[2]);
 	app.draw(chips[3]);
-	napisz(app, sf::Vector2f(475, 520), "5");
-	napisz(app, sf::Vector2f(555, 520), "10");
-	napisz(app, sf::Vector2f(630, 520), "20");
-	napisz(app, sf::Vector2f(710, 520), "50");
+	write(app, sf::Vector2f(475, 520), "5");
+	write(app, sf::Vector2f(555, 520), "10");
+	write(app, sf::Vector2f(630, 520), "20");
+	write(app, sf::Vector2f(710, 520), "50");
 
-	sf::String napis;
-	napis = "PULA " + to_string(Bank) + "\n     Ty " + to_string(PlayerRate) + "\n      AI " + to_string(OponentRate);
-	napisz(app, sf::Vector2f(150, 320), napis);
-	napis = "Ty " + to_string(PlayerCash) + "\nAi " + to_string(OpponentCash);
-	napisz(app, sf::Vector2f(900, 320), napis);
+	sf::String title;
+	title = "PULA " + to_string(Bank) + "\n     Ty " + to_string(PlayerRate) + "\n      AI " + to_string(OponentRate);
+	write(app, sf::Vector2f(150, 320), title);
+	title = "Ty " + to_string(PlayerCash) + "\nAi " + to_string(OpponentCash);
+	write(app, sf::Vector2f(900, 320), title);
 
 	Vector2i mx = Mouse::getPosition(app);
-	napis = "x=" + std::to_string(mx.x) + "  y=" + std::to_string(mx.y) + "  ";
-	napisz(app, sf::Vector2f(50, 50), napis);
+	title = "x=" + std::to_string(mx.x) + "  y=" + std::to_string(mx.y) + "  ";
+	write(app, sf::Vector2f(50, 50), title);
 
 }
 void Table::spause(sf::RenderWindow& app) {
@@ -156,7 +156,7 @@ void Table::sgameOver(sf::RenderWindow& app) {
 	app.display();
 	util.delay(1500);
 }
-bool Table::setFont(sf::String fontname, int rozmiar, sf::Color kolor) {
+bool Table::setFont(sf::String fontname, int size, sf::Color color) {
 	if (!font.loadFromFile(fontname)) {
 		cout << "Nie udalo sie wczytac czcionki" << endl;
 		return false;
@@ -164,28 +164,28 @@ bool Table::setFont(sf::String fontname, int rozmiar, sf::Color kolor) {
 
 	// wybranie czcionki
 	text.setFont(font);
-	text.setCharacterSize(rozmiar); // w pikselach, nie punktach!
-	text.setColor(kolor);
+	text.setCharacterSize(size); // w pikselach, nie punktach!
+	text.setColor(color);
 	return true;
 }
-void Table::napisz(sf::RenderWindow& okno, sf::Vector2f pozycjaNapisu, sf::String coNapisac) {
+void Table::write(sf::RenderWindow& window, sf::Vector2f pozycjaNapisu, sf::String coNapisac) {
 	text.setPosition(pozycjaNapisu);
 	text.setString(coNapisac);
-	okno.draw(text);
+	window.draw(text);
 }
 void Table::youwon(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += Bank;
-	sf::String napis = "You win " + to_string(Bank);
-	napisz(app, sf::Vector2f(370, 700), napis);
+	sf::String title = "You win " + to_string(Bank);
+	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	delay(2500);
 }
 void Table::youlose(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	OpponentCash += Bank;
-	sf::String napis = "You lose " + to_string(Bank);
-	napisz(app, sf::Vector2f(370, 700), napis);
+	sf::String title = "You lose " + to_string(Bank);
+	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	delay(2500);
 }
@@ -193,8 +193,8 @@ void Table::draw(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	OpponentCash += OponentRate;
 	PlayerCash += PlayerRate;
-	sf::String napis = "The bank returns to you " + std::to_string(PlayerRate) + "  AI " + std::to_string(OponentRate);
-	napisz(app, sf::Vector2f(370, 700), napis);
+	sf::String title = "The bank returns to you " + std::to_string(PlayerRate) + "  AI " + std::to_string(OponentRate);
+	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	delay(2500);
 }
