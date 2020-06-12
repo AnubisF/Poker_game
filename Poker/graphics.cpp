@@ -13,7 +13,7 @@ Table::~Table()
 {
 }
 
-void Table::wait(int htmsec) {
+void Table::delay(int htmsec) {
 	sf::Clock clockTemp;
 	clockTemp.restart();
 	do {

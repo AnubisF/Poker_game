@@ -39,19 +39,19 @@ Table::~Table()
 {
 }
 
-void Table::AI_podbijaStawke(sf::RenderWindow& app, int ileDodac) {
-	if (ileDodac <= OpponentCash && ileDodac > 0) {
-		OponentRate += ileDodac;
-		OpponentCash -= ileDodac;
+void Table::AI_raiseRate(sf::RenderWindow& app, int howMuchToAdd) {
+	if (howMuchToAdd <= OpponentCash && howMuchToAdd > 0) {
+		OponentRate += howMuchToAdd;
+		OpponentCash -= howMuchToAdd;
 		Bank = PlayerRate + OponentRate;
-		sf::String napis = "Przeciwnik podbija stawke o " + std::to_string(ileDodac);
+		sf::String napis = "The opponent raises the rate " + std::to_string(howMuchToAdd);
 		napisz(app, sf::Vector2f(370, 700), napis);
 		app.display();
-		czekaj(1500);
+		delay(1500);
 	}
 }
 
-void Table::wyrownajStawki() {
+void Table::raiseRate() {
 	// trzeba obliczyc roznice i odjac od kasy
 	int difference = PlayerRate - OponentRate;
 	//	std::cout << "difference = " << difference << "\n";
@@ -61,9 +61,9 @@ void Table::wyrownajStawki() {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += difference;
 }
-void Table::ostatnieDodanieDoStawki(int ileDodac) {
-	PlayerRate += ileDodac;
-	PlayerCash -= ileDodac;
+void Table::addedToRate(int howMuchToAdd) {
+	PlayerRate += howMuchToAdd;
+	PlayerCash -= howMuchToAdd;
 	int difference = PlayerRate - OponentRate;
 	if (PlayerRate > OponentRate) {
 		PlayerRate = OponentRate;
@@ -71,24 +71,24 @@ void Table::ostatnieDodanieDoStawki(int ileDodac) {
 	}
 	playSound("images/dieShuffle1.wav");
 }
-bool Table::AI_wyrownujeStawke() {
-	int ileDodac = PlayerRate - OponentRate;
-	std::cout << "ile dodac =" << ileDodac << std::endl;
-	if (ileDodac <= OpponentCash && ileDodac >= 0) {
-		//		OponentRate += ileDodac;
+bool Table::AI_equalRate() {
+	int howMuchToAdd = PlayerRate - OponentRate;
+	std::cout << "How much to add =" << howMuchToAdd << std::endl;
+	if (howMuchToAdd <= OpponentCash && howMuchToAdd >= 0) {
+		//		OponentRate += howMuchToAdd;
 		OponentRate = PlayerRate;
-		OpponentCash -= ileDodac;
+		OpponentCash -= howMuchToAdd;
 		Bank = PlayerRate + OponentRate;
 		return true;
 	}
 
 	return false;
 }
-void Table::dodajDoStawki(int ileDodac) {
-	if (ileDodac <= PlayerCash) {
+void Table::addToRate(int howMuchToAdd) {
+	if (howMuchToAdd <= PlayerCash) {
 		playSound("images/dieShuffle1.wav");
-		PlayerRate += ileDodac;
-		PlayerCash -= ileDodac;
+		PlayerRate += howMuchToAdd;
+		PlayerCash -= howMuchToAdd;
 	}
 	Bank = PlayerRate + OponentRate;
 }
@@ -101,18 +101,18 @@ void Table::noweRozdanie() {
 void Table::rzucKarty(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	OpponentCash += Bank;
-	sf::String napis = "Rzuciles karty. Przeciwnik wygrywa " + to_string(Bank);
+	sf::String napis = "You threw the cards. Opponent wins " + to_string(Bank);
 	napisz(app, sf::Vector2f(370, 700), napis);
 	app.display();
-	//	czekaj(2500);
+	//	delay(2500);
 }
 void Table::AI_RzucilKarty(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += Bank;
-	sf::String napis = "Przeciwnik rzucil karty. Wygrales " + to_string(Bank);
+	sf::String napis = "The opponent threw the cards. You won " + to_string(Bank);
 	napisz(app, sf::Vector2f(370, 700), napis);
 	app.display();
-	czekaj(500);
+	delay(500);
 }
 void Table::rysujPlansze(sf::RenderWindow& app) {
 	app.draw(tlo);
@@ -143,9 +143,9 @@ void Table::pause(sf::RenderWindow& app) {
 	temp.setPosition(250, 280);
 	app.draw(temp);
 	app.display();
-	graphics.czekaj(200);
+	graphics.delay(200);
 	do {} while (!sf::Keyboard::isKeyPressed(sf::Keyboard::P));
-	graphics.czekaj(200);
+	graphics.delay(200);
 }
 void Table::gameOver(sf::RenderWindow& app) {
 	std::cout << "game over" << std::endl;
@@ -154,7 +154,7 @@ void Table::gameOver(sf::RenderWindow& app) {
 	temp.setPosition(325, 250);
 	app.draw(temp);
 	app.display();
-	graphics.czekaj(1500);
+	graphics.delay(1500);
 }
 bool Table::setCzcionka(sf::String fontname, int rozmiar, sf::Color kolor) {
 	if (!font.loadFromFile(fontname)) {
@@ -179,7 +179,7 @@ void Table::youwon(sf::RenderWindow& app) {
 	sf::String napis = "You win " + to_string(Bank);
 	napisz(app, sf::Vector2f(370, 700), napis);
 	app.display();
-	czekaj(2500);
+	delay(2500);
 }
 void Table::youlose(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
@@ -187,7 +187,7 @@ void Table::youlose(sf::RenderWindow& app) {
 	sf::String napis = "You lose " + to_string(Bank);
 	napisz(app, sf::Vector2f(370, 700), napis);
 	app.display();
-	czekaj(2500);
+	delay(2500);
 }
 void Table::draw(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
@@ -196,7 +196,7 @@ void Table::draw(sf::RenderWindow& app) {
 	sf::String napis = "The bank returns to you " + std::to_string(PlayerRate) + "  AI " + std::to_string(OponentRate);
 	napisz(app, sf::Vector2f(370, 700), napis);
 	app.display();
-	czekaj(2500);
+	delay(2500);
 }
 
 void Table::playSound(std::string plik) {

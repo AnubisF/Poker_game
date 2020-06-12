@@ -15,11 +15,11 @@
 #include "Graphics.h"
 
 void mixCards(int*, Player&, Opponent&);
-void grajDzwiek(std::string);
+void playSound(std::string);
 int ai(sf::RenderWindow&, Player&, Opponent&, Table*, Cards* cards, Animation*, int*, int, sf::String&);
 void rysujWszystko(sf::RenderWindow&, std::list<Object*>, Table*);
-void sprawdzKarty(Player&, Opponent&, std::string, std::string&, int&, int&, int&, int*);
-void czekaj(int);
+void checkCards(Player&, Opponent&, std::string, std::string&, int&, int&, int&, int*);
+void delay(int);
 
 using namespace sf;
 
@@ -51,7 +51,7 @@ int main()
 	tKartaTyl.loadFromFile("images/playingCardBacks.png");
 
 	Animation sOpponent(t2, 170, 0, 79, 110, 3, 0, 0.05);
-	Animation sOpponentWygrana(t2, 0, 120, 140, 132, 8, 4, 0.05);
+	Animation sOpponentWin(t2, 0, 120, 140, 132, 8, 4, 0.05);
 	Animation sOpponentPrzegrana(t2, 0, 390, 176, 110, 3, 0, 0.02);
 
 	int pozycjeKart[120] = {		// pozycje sprajtów w pliku
@@ -60,11 +60,11 @@ int main()
 	Animation sKarta[60];		//sprity kart 0-51 - talia, 52 ty³ karty
 	for (int nr = 0; nr < 52; nr++) {
 		Animation tempAnim(tKarty, pozycjeKart[nr * 2], pozycjeKart[nr * 2 + 1], 140, 190, 1, 0, 0);
-		tempAnim.pomniejszSprite();
+		tempAnim.reduceSprite();
 		sKarta[nr] = tempAnim;
 	}
 	Animation tempAnim(tKartaTyl, 0, 0, 140, 190, 1, 0, 0);		// ty³ karty
-	tempAnim.pomniejszSprite();
+	tempAnim.reduceSprite();
 	sKarta[52] = tempAnim;
 
 
@@ -117,27 +117,27 @@ int main()
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape))		app.close();
-		if (Keyboard::isKeyPressed(Keyboard::P))			table->pauza(app);
-		if (Keyboard::isKeyPressed(Keyboard::G))			table->koniecGry(app);
+		if (Keyboard::isKeyPressed(Keyboard::P))			table->pause(app);
+		if (Keyboard::isKeyPressed(Keyboard::G))			table->gameOver(app);
 
 		selectedZone = myGraphics.checkZones(app);
-		if (selectedZone == 1 && ktoraRunda != 5) {	// rzucasz karty
+		if (selectedZone == 1 && whatRound != 5) {	// rzucasz karty
 			// ods³oñ karty opponenta
 			for (int i = 0; i < 5; i++) {
 				karty[i + 5].settings(sKarta[opponent.getCard(i)], 445 + i * 80, 220);
 				objects.push_back(&karty[i + 5]);
 				rysujWszystko(app, objects, table);
 			}
-			grajDzwiek("images/you_lose.ogg");
+			playSound("images/you_lose.ogg");
 			table->rzucKarty(app);
-			opponent.settings(sOpponentWygrana, 480, 100);
+			opponent.settings(sOpponentWin, 480, 100);
 			objects.push_back(&opponent);
 			rysujWszystko(app, objects, table);
-			myGraphics.czekaj(200);
-			ktoraRunda = 5;
+			myGraphics.delay(200);
+			whatRound = 5;
 		}
-		if (selectedZone == 2 && ktoraRunda == 1) {		// pierwsze sprawdzenie kart
-			AI_reakcja = ai(app, player, opponent, table, karty, sKarta, talia, ktoraRunda, wiadomosc);
+		if (selectedZone == 2 && whatRound == 1) {		// pierwsze sprawdzenie kart
+			AI_reakcja = ai(app, player, opponent, table, karty, sKarta, talia, whatRound, wiadomosc);
 			if (AI_reakcja == AI_RzucKarty) {
 				// ods³oñ karty opponenta
 				for (int i = 0; i < 5; i++) {
@@ -147,20 +147,20 @@ int main()
 				}
 				opponent.settings(sOpponentPrzegrana, 480, 100);
 				objects.push_back(&opponent);
-				ktoraRunda = 5;
-				grajDzwiek("images/you_win.ogg");
+				whatRound = 5;
+				playSound("images/you_win.ogg");
 				for (int i = 0; i < 25; i++)
 					rysujWszystko(app, objects, table);
 				table->AI_RzucilKarty(app);
 			}
 			else
 			{
-				ktoraRunda = 2;
+				whatRound = 2;
 			}
 		}
 
 		//		sprawdz opponenta, nastepna runda
-		if (selectedZone == 2 && AI_reakcja != AI_PodbilStawke && (ktoraRunda == 2 || ktoraRunda == 3)) {
+		if (selectedZone == 2 && AI_reakcja != AI_PodbilStawke && (whatRound == 2 || whatRound == 3)) {
 			AI_reakcja = ai(app, player, opponent, table, karty, sKarta, talia, 2, wiadomosc);
 			if (AI_reakcja == AI_RzucKarty) {
 				// ods³oñ karty opponenta
@@ -171,26 +171,26 @@ int main()
 				}
 				opponent.settings(sOpponentPrzegrana, 480, 100);
 				objects.push_back(&opponent);
-				ktoraRunda = 5;
-				grajDzwiek("images/you_win.ogg");
+				whatRound = 5;
+				playSound("images/you_win.ogg");
 				for (int i = 0; i < 25; i++)
 					rysujWszystko(app, objects, table);
 				table->AI_RzucilKarty(app);
 			}
 			else
 			{
-				ktoraRunda = 4;
+				whatRound = 4;
 			}
 		}
 
-		if (wiadomosc.getSize() > 5 && ktoraRunda == 2 && AI_reakcja != AI_PodbilStawke) {
+		if (wiadomosc.getSize() > 5 && whatRound == 2 && AI_reakcja != AI_PodbilStawke) {
 			table->napisz(app, sf::Vector2f(370, 700), wiadomosc);
 			app.display();
-			czekaj(2200);
+			delay(2200);
 			wiadomosc = "";
 		}
 
-		if (selectedZone == 2 && AI_reakcja != AI_PodbilStawke && ktoraRunda == 4) {		// ostatnie sprawdzenie kart
+		if (selectedZone == 2 && AI_reakcja != AI_PodbilStawke && whatRound == 4) {		// ostatnie sprawdzenie kart
 
 			// ods³oñ karty opponenta
 			for (int i = 0; i < 5; i++) {
@@ -200,7 +200,7 @@ int main()
 			}
 			AI_reakcja = ai(app, player, opponent, table, karty, sKarta, talia, 3, wiadomosc);
 			if (AI_reakcja == WYNIK_WYGRANA) {
-				grajDzwiek("images/you_win.ogg");
+				playSound("images/you_win.ogg");
 				opponent.settings(sOpponentPrzegrana, 480, 100);
 				objects.push_back(&opponent);
 				rysujWszystko(app, objects, table);
@@ -210,17 +210,17 @@ int main()
 				table->remis(app);
 			}
 			else if (AI_reakcja == WYNIK_PRZEGRANA) {
-				grajDzwiek("images/you_lose.ogg");
-				opponent.settings(sOpponentWygrana, 480, 100);
+				playSound("images/you_lose.ogg");
+				opponent.settings(sOpponentWin, 480, 100);
 				objects.push_back(&opponent);
 				rysujWszystko(app, objects, table);
 				table->przegrales(app);
 			}
 
-			ktoraRunda = 5;
+			whatRound = 5;
 		}
 
-		if (selectedZone == 3 && ktoraRunda == 2 && AI_reakcja != AI_PodbilStawke) {		// wymien karty
+		if (selectedZone == 3 && whatRound == 2 && AI_reakcja != AI_PodbilStawke) {		// wymien karty
 			for (int i = 0; i < 5; i++) {
 				if (player.CheckIsRaised(i) == true) {
 					player.setKarta(i, talia[10 + i]);
@@ -228,9 +228,9 @@ int main()
 					player.resetKarta(i);
 				}
 			}
-			ktoraRunda = 3;
+			whatRound = 3;
 		}
-		if ((selectedZone == 4 && ktoraRunda == 5) || ktoraRunda == 0) {		// nowe rozdanie
+		if ((selectedZone == 4 && whatRound == 5) || whatRound == 0) {		// nowe rozdanie
 			system("cls");
 			opponent.settings(sOpponent, 480, 100);
 			objects.push_back(&opponent);
@@ -243,16 +243,16 @@ int main()
 				objects.push_back(&karty[i + 5]);
 			}
 			table->noweRozdanie();
-			ktoraRunda = 1;
+			whatRound = 1;
 		}
-		if (selectedZone >= 8 && selectedZone <= 12 && ktoraRunda == 2) {
+		if (selectedZone >= 8 && selectedZone <= 12 && whatRound == 2) {
 			player.changeRaised(selectedZone - 8);
 			if (player.czyCzteryKartyWybrane() == true) {
 				player.changeRaised(selectedZone - 8);
 			}
 			else
 			{
-				grajDzwiek("images/cardSlide1.wav");
+				playSound("images/cardSlide1.wav");
 				if (player.CheckIsRaised(selectedZone - 8) == true) {
 					karty[selectedZone - 8].setY(350);
 				}
@@ -262,25 +262,25 @@ int main()
 				}
 			}
 		}
-		if (selectedZone == 13 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->dodajDoStawki(5);
-		if (selectedZone == 14 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->dodajDoStawki(10);
-		if (selectedZone == 15 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->dodajDoStawki(20);
-		if (selectedZone == 16 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->dodajDoStawki(50);
-		if (selectedZone == 13 && ktoraRunda == 4)	table->ostatnieDodanieDoStawki(5);
-		if (selectedZone == 14 && ktoraRunda == 4)	table->ostatnieDodanieDoStawki(10);
-		if (selectedZone == 15 && ktoraRunda == 4)	table->ostatnieDodanieDoStawki(20);
-		if (selectedZone == 16 && ktoraRunda == 4)	table->ostatnieDodanieDoStawki(50);
+		if (selectedZone == 13 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->addToRate(5);
+		if (selectedZone == 14 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->addToRate(10);
+		if (selectedZone == 15 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->addToRate(20);
+		if (selectedZone == 16 && (ktoraRunda == 2 || ktoraRunda == 1 || ktoraRunda == 3))	table->addToRate(50);
+		if (selectedZone == 13 && ktoraRunda == 4)	table->addedToRate(5);
+		if (selectedZone == 14 && ktoraRunda == 4)	table->addedToRate(10);
+		if (selectedZone == 15 && ktoraRunda == 4)	table->addedToRate(20);
+		if (selectedZone == 16 && ktoraRunda == 4)	table->addedToRate(50);
 		if (AI_reakcja == AI_PodbilStawke) {
 			if (table->getRateAI() == table->getPlayerRate()) {
 				AI_reakcja = 0;
 			}
 			if (table->getRateAI() < table->getPlayerRate()) {
 				AI_reakcja = 0;
-				table->wyrownajStawki();
+				table->raiseRate();
 			}
 		}
 		rysujWszystko(app, objects, table);
-		myGraphics.czekaj(40);
+		myGraphics.delay(40);
 	}
 	return 0;
 }
@@ -316,7 +316,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* table, 
 	for (int i = 0; i < 5; i++)	kartyDoWymiany[i] = -1;		// wyczyœæ (ai) karty do wymiany
 
 	// sprawdz jakie karty ma opponent
-	sprawdzKarty(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, kartyDoWymiany);
+	checkCards(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, kartyDoWymiany);
 
 	// teraz juz wiadomo co ma komputer, wiêc czas na reakcje ai
 	std::cout << coMasz << std::endl;
@@ -337,7 +337,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* table, 
 
 		if (table->getPlayerRate() > 10) {
 			// player coœ wrzuci³ na stó³ wiêc trzeba wyrównaæ
-			if (table->AI_wyrownujeStawke() == false) {
+			if (table->AI_equalRate() == false) {
 				// za ma³o geldów
 	//			std::cout << "AI NIE wyrownuje stawki i rzuca kartami" << std::endl;
 				return AI_RzucKarty;
@@ -348,7 +348,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* table, 
 		{
 
 			std::cout << "AI podbija stawke o " << ileZagrac << std::endl;
-			table->AI_podbijaStawke(app, ileZagrac);
+			table->AI_raiseRate(app, ileZagrac);
 			for (int i = 0; i < 5; i++) {
 				if (kartyDoWymiany[i] == -1) {
 					tempk++;
@@ -383,7 +383,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* table, 
 			return AI_RzucKarty;	// nic nie ma, wiec rzucam karty
 
 		// wyrownaj stawke
-		if (table->AI_wyrownujeStawke() == false) {
+		if (table->AI_equalRate() == false) {
 			// za ma³o geldów
 			std::cout << "runda 2 AI NIE wyrownuje stawki i rzuca kartami" << std::endl;
 			return AI_RzucKarty;
@@ -394,7 +394,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* table, 
 		if (ileZagrac > 0)
 		{
 			std::cout << "runda2 AI podbija stawke o " << ileZagrac << std::endl;
-			table->AI_podbijaStawke(app, ileZagrac);
+			table->AI_raiseRate(app, ileZagrac);
 			return AI_PodbilStawke;
 		}
 
@@ -411,12 +411,12 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* table, 
 		std::cout << "odslaniam karty" << std::endl;
 		//			karty[i + 5].settings(sKarta[opponent.getCard(i)], 445 + i * 80, 220);
 		//		}
-		sprawdzKarty(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, kartyDoWymiany);
+		checkCards(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, kartyDoWymiany);
 		aiKarty = coMasz;
 		aiMoc = MOC_KART;
 		aifig1 = figura1;
 		aifig2 = figura2;
-		sprawdzKarty(player, opponent, "TY", coMasz, figura1, figura2, MOC_KART, kartyDoWymiany);
+		checkCards(player, opponent, "TY", coMasz, figura1, figura2, MOC_KART, kartyDoWymiany);
 		mojeKarty = coMasz;
 		tyMoc = MOC_KART;
 		mfig1 = figura1;
@@ -457,7 +457,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table* table, 
 
 	return 0;		// 0 - brak reakcji
 }
-void sprawdzKarty(Player& player, Opponent& opponent, std::string kto, std::string& coMasz, int& figura1, int& figura2, int& MOC_KART, int* kartyDoWymiany) {
+void checkCards(Player& player, Opponent& opponent, std::string kto, std::string& coMasz, int& figura1, int& figura2, int& MOC_KART, int* kartyDoWymiany) {
 	int delta = 13;		// przesuniêcie w kartach, figurach
 	int jakieKarty[13];		// jakie karty w jakich ilosciach wystepuja
 	coMasz = "nic";
@@ -626,7 +626,7 @@ void mixCards(int* talia, Player& player, Opponent& opponent) {
 	//	talia[8] = 13;
 	//	talia[9] = 14;
 
-	grajDzwiek("images/cardFan1.wav");
+	playSound("images/cardFan1.wav");
 
 	// rozdaj karty
 	for (int i = 0; i < 5; i++) {
@@ -635,7 +635,7 @@ void mixCards(int* talia, Player& player, Opponent& opponent) {
 	}
 	player.resetIleKartWybranych();
 }
-void grajDzwiek(std::string plik) {
+void playSound(std::string plik) {
 	sf::SoundBuffer buffer;
 	buffer.loadFromFile(plik);
 	sf::Sound sound(buffer);
@@ -645,7 +645,7 @@ void grajDzwiek(std::string plik) {
 	}
 
 }
-void czekaj(int htmsec) {
+void delay(int htmsec) {
 	Clock clockTemp;
 	clockTemp.restart();
 	do {		// wait time

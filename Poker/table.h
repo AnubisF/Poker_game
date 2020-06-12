@@ -5,7 +5,6 @@
 
 class Table
 {
-	// zawiera menu, plansze koncowe i pauze
 private:
 	sf::Texture gameOver, pause, menu, textTlo, textPanel, textChips;
 	sf::Sprite tlo, panel, chips[5];
@@ -29,13 +28,13 @@ public:
 	void youlose(sf::RenderWindow&);
 	void draw(sf::RenderWindow&);
 
-	void ostatnieDodanieDoStawki(int);
+	void addedToRate(int);
 	int getRateAI() { return OponentRate; }
 	int getPlayerRate() { return PlayerRate; }
-	void wyrownajStawki();
-	void dodajDoStawki(int);
-	void AI_podbijaStawke(sf::RenderWindow&, int);
-	bool AI_wyrownujeStawke();
+	void raiseRate();
+	void addToRate(int);
+	void AI_raiseRate(sf::RenderWindow&, int);
+	bool AI_equalRate();
 	void AI_RzucilKarty(sf::RenderWindow&);
 	void rzucKarty(sf::RenderWindow&);
 	void noweRozdanie();
@@ -44,10 +43,10 @@ public:
 	bool setCzcionka(sf::String, int, sf::Color);
 	void napisz(sf::RenderWindow&, sf::Vector2f, sf::String);
 	void playSound(std::string);
-	void czekaj(int htmsec) {
+	void delay(int htmsec) {
 		sf::Clock clockTemp;
 		clockTemp.restart();
-		do {		// odczekaj czas
+		do {
 		} while (clockTemp.getElapsedTime().asMilliseconds() < htmsec);
 	}
 };

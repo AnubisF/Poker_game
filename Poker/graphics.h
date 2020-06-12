@@ -23,7 +23,7 @@ public:
 	sf::Int32 getMillisecondTime() { return clock.getElapsedTime().asMilliseconds(); }
 	float getSecondTime() { return clock.getElapsedTime().asSeconds(); }
 	float getTotalTime() { return TotalSecondsTime; }
-	void wait(int);
+	void delay(int);
 
 	// functions responsible for operating the zone
 	void setZone(int, int, int, int, int);
