@@ -15,7 +15,7 @@ private:
 	int PlayerRate;
 	int OponentRate;
 	int Bank;
-	int rate;
+	int Rate;
 	int PlayerCash;
 	int OpponentCash;
 

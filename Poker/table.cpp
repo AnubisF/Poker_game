@@ -7,7 +7,7 @@ using namespace std;
 
 Table::Table()
 {
-	Bank = rate = PlayerRate = OponentRate = 0;
+	Bank = Rate = PlayerRate = OponentRate = 0;
 	PlayerCash = OpponentCash = 1000;
 
 	gameOver.loadFromFile("images/GameOver1.png");
@@ -44,7 +44,7 @@ void Table::AI_raiseRate(sf::RenderWindow& app, int howMuchToAdd) {
 		OponentRate += howMuchToAdd;
 		OpponentCash -= howMuchToAdd;
 		Bank = PlayerRate + OponentRate;
-		sf::String title = "The opponent raises the rate " + std::to_string(howMuchToAdd);
+		sf::String title = "The opponent raises the Rate " + std::to_string(howMuchToAdd);
 		write(app, sf::Vector2f(370, 700), title);
 		app.display();
 		delay(1500);
@@ -52,7 +52,7 @@ void Table::AI_raiseRate(sf::RenderWindow& app, int howMuchToAdd) {
 }
 
 void Table::raiseRate() {
-	// trzeba obliczyc roznice i odjac od kasy
+	// Need to calculate the difference and subtract from the bank
 	int difference = PlayerRate - OponentRate;
 	//	std::cout << "difference = " << difference << "\n";
 	PlayerRate = OponentRate;
@@ -158,19 +158,19 @@ void Table::sgameOver(sf::RenderWindow& app) {
 }
 bool Table::setFont(sf::String fontname, int size, sf::Color color) {
 	if (!font.loadFromFile(fontname)) {
-		cout << "Nie udalo sie wczytac czcionki" << endl;
+		cout << "Failed to load font." << endl;
 		return false;
 	}
 
-	// wybranie czcionki
+	// selecting a font
 	text.setFont(font);
-	text.setCharacterSize(size); // w pikselach, nie punktach!
+	text.setCharacterSize(size); //in pixels!!!
 	text.setColor(color);
 	return true;
 }
-void Table::write(sf::RenderWindow& window, sf::Vector2f pozycjaNapisu, sf::String coNapisac) {
-	text.setPosition(pozycjaNapisu);
-	text.setString(coNapisac);
+void Table::write(sf::RenderWindow& window, sf::Vector2f stringPosition, sf::String string) {
+	text.setPosition(stringPosition);
+	text.setString(string);
 	window.draw(text);
 }
 void Table::youwon(sf::RenderWindow& app) {
