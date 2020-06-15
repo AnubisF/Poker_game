@@ -10,8 +10,8 @@ Table::Table()
 	Bank = Rate = PlayerRate = OponentRate = 0;
 	PlayerCash = OpponentCash = 1000;
 
-	gameOver.loadFromFile("images/GameOver1.png");
-	pause.loadFromFile("images/Pauza.png");
+	gameOver.loadFromFile("images/GameOver.png");
+	pause.loadFromFile("images/Pause.png");
 	menu.loadFromFile("images/menu.png");
 	textTlo.loadFromFile("images/background.png");
 	tlo.setTexture(textTlo);
