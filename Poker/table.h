@@ -32,11 +32,11 @@ public:
 	void addedToRate(int);
 	int getRateAI() { return OponentRate; }
 	int getPlayerRate() { return PlayerRate; }
-	void raiseRate();
+	void toCall();
 	void addToRate(int);
-	void AI_raiseRate(sf::RenderWindow&, int);
-	bool AI_equalRate();
-	void AI_RzucilKarty(sf::RenderWindow&);
+	void AI_raiseBet(sf::RenderWindow&, int);
+	bool AI_toCall();
+	void AI_dropCards(sf::RenderWindow&);
 	void dropCards(sf::RenderWindow&);
 	void newDealCards();
 	void drawTable(sf::RenderWindow&);

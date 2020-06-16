@@ -39,19 +39,19 @@ Table::~Table()
 {
 }
 
-void Table::AI_raiseRate(sf::RenderWindow& app, int howMuchToAdd) {
+void Table::AI_raiseBet(sf::RenderWindow& app, int howMuchToAdd) {
 	if (howMuchToAdd <= OpponentCash && howMuchToAdd > 0) {
 		OponentRate += howMuchToAdd;
 		OpponentCash -= howMuchToAdd;
 		Bank = PlayerRate + OponentRate;
-		sf::String title = "The opponent raises the Rate " + std::to_string(howMuchToAdd);
+		sf::String title = "The opponent raises the bet on " + std::to_string(howMuchToAdd);
 		write(app, sf::Vector2f(370, 700), title);
 		app.display();
 		delay(1500);
 	}
 }
 
-void Table::raiseRate() {
+void Table::toCall() {
 	// Need to calculate the difference and subtract from the bank
 	int difference = PlayerRate - OponentRate;
 	//	std::cout << "difference = " << difference << "\n";
@@ -71,7 +71,7 @@ void Table::addedToRate(int howMuchToAdd) {
 	}
 	playSound("images/dieShuffle1.wav");
 }
-bool Table::AI_equalRate() {
+bool Table::AI_toCall() {
 	int howMuchToAdd = PlayerRate - OponentRate;
 	std::cout << "How much to add =" << howMuchToAdd << std::endl;
 	if (howMuchToAdd <= OpponentCash && howMuchToAdd >= 0) {
@@ -101,15 +101,15 @@ void Table::newDealCards() {
 void Table::dropCards(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	OpponentCash += Bank;
-	sf::String title = "You threw the cards. Opponent wins " + to_string(Bank);
+	sf::String title = "You drop the cards. Opponent wins " + to_string(Bank);
 	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	//	delay(2500);
 }
-void Table::AI_RzucilKarty(sf::RenderWindow& app) {
+void Table::AI_dropCards(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += Bank;
-	sf::String title = "The opponent threw the cards. You won " + to_string(Bank);
+	sf::String title = "The opponent drop the cards. You won " + to_string(Bank);
 	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	delay(500);
