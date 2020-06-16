@@ -37,10 +37,10 @@ public:
 	void AI_raiseRate(sf::RenderWindow&, int);
 	bool AI_equalRate();
 	void AI_RzucilKarty(sf::RenderWindow&);
-	void rzucKarty(sf::RenderWindow&);
-	void noweRozdanie();
-	void rysujPlansze(sf::RenderWindow&);
-	// funkcje odpowiedzialne za czcionki i napisy
+	void dropCards(sf::RenderWindow&);
+	void newDealCards();
+	void drawTable(sf::RenderWindow&);
+	// functions responsible for fonts and subtitles
 	bool setFont(sf::String, int, sf::Color);
 	void write(sf::RenderWindow&, sf::Vector2f, sf::String);
 	void playSound(std::string);

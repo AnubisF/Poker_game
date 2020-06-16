@@ -92,13 +92,13 @@ void Table::addToRate(int howMuchToAdd) {
 	}
 	Bank = PlayerRate + OponentRate;
 }
-void Table::noweRozdanie() {
+void Table::newDealCards() {
 	PlayerRate = OponentRate = 10;
 	PlayerCash -= 10;
 	OpponentCash -= 10;
 	Bank = PlayerRate + OponentRate;
 }
-void Table::rzucKarty(sf::RenderWindow& app) {
+void Table::dropCards(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	OpponentCash += Bank;
 	sf::String title = "You threw the cards. Opponent wins " + to_string(Bank);
@@ -114,7 +114,7 @@ void Table::AI_RzucilKarty(sf::RenderWindow& app) {
 	app.display();
 	delay(500);
 }
-void Table::rysujPlansze(sf::RenderWindow& app) {
+void Table::drawTable(sf::RenderWindow& app) {
 	app.draw(tlo);
 	app.draw(panel);
 	app.draw(chips[0]);

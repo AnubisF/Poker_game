@@ -74,8 +74,8 @@ int main()
 
 	Player player;
 
-	Cards cards[20];		// cards do wyœwietlenia, 0-4 moje, 5-9 ai,
-	int talia[52];			// talia z numerami kart, 0-4 moje, 5-9 ai, 10+ do dobrania 
+	Cards cards[20];		// cards to display, 0-4 player, 5-9 ai,
+	int talia[52];			// deck with card numbers, 0-4 player, 5-9 and, 10+ to choose 
 
 	Util myUtil;		// mouse click zones
 	myUtil.setZone(1, 265, 645, 395, 695);			// rzuæ cards
@@ -89,7 +89,7 @@ int main()
 	myUtil.setZone(11, 650, 320, 720, 410);
 	myUtil.setZone(12, 730, 320, 800, 410);
 
-	myUtil.setZone(13, 450, 500, 515, 565);		// ¿etony
+	myUtil.setZone(13, 450, 500, 515, 565);		// chips
 	myUtil.setZone(14, 530, 500, 595, 565);
 	myUtil.setZone(15, 610, 500, 675, 565);
 	myUtil.setZone(16, 690, 500, 755, 565);
@@ -97,13 +97,13 @@ int main()
 	int selectedZone;	// which zone was selected (clicked)
 	int round = 0;
 	// =0 - start of the game, distribution of cards
-	// =1 - mozna rzucic cards, podniesc stawke, check (drop, rise, pass)
-	// =11 (ai) - ai sprawdza czy: drop/rise/pass 
-	// =2 - mozna rzucic cards, wymienic cards,  check, trzeba wyrownac stawke (drop, rise, change, pass)
-	// =22 - ai: to co player wyzej poza wyrownaniem stawki (player wyrownuje i nie moze juz wiecej teraz postawic)
-	// =2a teraz nastêpuje wymiana kart
-	// =3 - mozna rzucic cards, podniesc stawke, sprawdzic (drop, rise, check)
-	// =33 - ai: drop/wyrownaj/check
+	// =1 - you can throw cards, raise the bid, check (drop, rise, pass)
+	// =11 (ai) - ai see also drop/rise/pass 
+	// =2 - you can throw cards, swap cards, check, you have to raise the rate (drop, rise, change, pass)
+	// =22 - ai: player raises and can no longer bet now
+	// =2a cards are being exchanged now
+	// =3 - throw cards, raise your bid, check (drop, rise, check)
+	// =33 - ai: drop/pass/check
 
 	int AI_reaction = 0;
 	sf::String wiadomosc = "";
@@ -121,15 +121,15 @@ int main()
 		if (Keyboard::isKeyPressed(Keyboard::G))			table->sgameOver(app);
 
 		selectedZone = myUtil.checkZones(app);
-		if (selectedZone == 1 && round != 5) {	// rzucasz cards
-			// ods³oñ cards opponenta
+		if (selectedZone == 1 && round != 5) {	// drop cards
+			// opponent cards
 			for (int i = 0; i < 5; i++) {
 				cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 				objects.push_back(&cards[i + 5]);
 				drawAll(app, objects, table);
 			}
 			playSound("images/you_lose.ogg");
-			table->rzucKarty(app);
+			table->dropCards(app);
 			opponent.settings(sOpponentWin, 480, 100);
 			objects.push_back(&opponent);
 			drawAll(app, objects, table);
@@ -220,7 +220,7 @@ int main()
 			round = 5;
 		}
 
-		if (selectedZone == 3 && round == 2 && AI_reaction != AI_increasesRate) {		// wymien cards
+		if (selectedZone == 3 && round == 2 && AI_reaction != AI_increasesRate) {		// exchange cards
 			for (int i = 0; i < 5; i++) {
 				if (player.CheckIsRaised(i) == true) {
 					player.setCard(i, talia[10 + i]);
@@ -230,7 +230,7 @@ int main()
 			}
 			round = 3;
 		}
-		if ((selectedZone == 4 && round == 5) || round == 0) {		// nowe rozdanie
+		if ((selectedZone == 4 && round == 5) || round == 0) {		// new deal
 			system("cls");
 			opponent.settings(sOpponent, 480, 100);
 			objects.push_back(&opponent);
@@ -242,7 +242,7 @@ int main()
 				objects.push_back(&cards[i]);
 				objects.push_back(&cards[i + 5]);
 			}
-			table->noweRozdanie();
+			table->newDealCards();
 			round = 1;
 		}
 		if (selectedZone >= 8 && selectedZone <= 12 && round == 2) {
@@ -295,9 +295,8 @@ void drawAll(sf::RenderWindow& app, std::list<Object*> objects, Table *table) {
 
 	}
 
-	// rysuj
 	app.clear();
-	table->rysujPlansze(app);
+	table->drawTable(app);
 	for (auto i : objects)
 		i->draw(app);
 	app.display();
