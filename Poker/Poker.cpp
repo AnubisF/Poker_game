@@ -79,9 +79,9 @@ int main()
 
 	Util myUtil;		// mouse click zones
 	myUtil.setZone(1, 265, 645, 395, 695);			// rzuæ cards
-	myUtil.setZone(2, 405, 645, 620, 695);			// sprawdŸ / pass
-	myUtil.setZone(3, 630, 645, 780, 695);			// wymieñ cards
-	myUtil.setZone(4, 790, 645, 930, 695);			// nowe rozdanie
+	myUtil.setZone(2, 405, 645, 620, 695);			// check / pass
+	myUtil.setZone(3, 630, 645, 780, 695);			// exchange cards
+	myUtil.setZone(4, 790, 645, 930, 695);			// new cards deal
 
 	myUtil.setZone(8, 410, 320, 475, 410);		// cards
 	myUtil.setZone(9, 490, 320, 560, 410);
@@ -136,10 +136,10 @@ int main()
 			myUtil.delay(200);
 			round = 5;
 		}
-		if (selectedZone == 2 && round == 1) {		// pierwsze sprawdzenie kart
+		if (selectedZone == 2 && round == 1) {		// first card check
 			AI_reaction = ai(app, player, opponent, table, cards, sCard, deckOfcards, round, message);
 			if (AI_reaction == AI_ThrowCards) {
-				// ods³oñ cards opponenta
+				// opponent cards
 				for (int i = 0; i < 5; i++) {
 					cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 					objects.push_back(&cards[i + 5]);
@@ -159,11 +159,11 @@ int main()
 			}
 		}
 
-		//		sprawdz opponenta, nastepna round
+		//check opponents, next round
 		if (selectedZone == 2 && AI_reaction != AI_increasesRate && (round == 2 || round == 3)) {
 			AI_reaction = ai(app, player, opponent, table, cards, sCard, deckOfcards, 2, message);
 			if (AI_reaction == AI_ThrowCards) {
-				// ods³oñ cards opponenta
+				// opponent cards
 				for (int i = 0; i < 5; i++) {
 					cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 					objects.push_back(&cards[i + 5]);
@@ -190,9 +190,9 @@ int main()
 			message = "";
 		}
 
-		if (selectedZone == 2 && AI_reaction != AI_increasesRate && round == 4) {		// ostatnie sprawdzenie kart
+		if (selectedZone == 2 && AI_reaction != AI_increasesRate && round == 4) {		// last card check
 
-			// ods³oñ cards opponenta
+			// opponent cards
 			for (int i = 0; i < 5; i++) {
 				cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 				objects.push_back(&cards[i + 5]);
@@ -204,7 +204,7 @@ int main()
 				opponent.settings(sOpponentDefeat, 480, 100);
 				objects.push_back(&opponent);
 				drawAll(app, objects, table);
-				table->youwon(app);
+				table->youwin(app);
 			}
 			else if (AI_reaction == Draw_Score) {
 				table->draw(app);
@@ -302,7 +302,7 @@ void drawAll(sf::RenderWindow& app, std::list<Object*> objects, Table *table) {
 	app.display();
 }
 int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, Cards *cards, Animation *sCard, int* deckOfcards, int round, sf::String& message) {
-	int cardsDoWymiany[5]; // które cards wymieniæ = 0
+	int cardsToExchange[5]; // which cards to exchange = 0
 	std::string coMasz = "nothing";			// here: a couple, two couples, three, three and a couple
 	std::string czyStrit = "nothing";		// here: straight, almost straight (4 cards same)
 	int figura1, figura2;		// the numbers you have, the higher the number, the higher the figure
@@ -312,12 +312,12 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 	int MOC_FIGUR = 0;
 	//	message = "nothing";
 
-	for (int i = 0; i < 5; i++)	cardsDoWymiany[i] = -1;		// wyczyœæ (ai) cards do wymiany
+	for (int i = 0; i < 5; i++)	cardsToExchange[i] = -1;		// wyczyœæ (ai) cards do wymiany
 
-	// sprawdz jakie cards ma opponent
-	checkCards(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, cardsDoWymiany);
+	// check which cards your opponent has
+	checkCards(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, cardsToExchange);
 
-	// teraz juz wiadomo co ma komputer, wiêc czas na reakcje ai
+	// now you know what the computer has, so it's time to react ai
 	std::cout << coMasz << std::endl;
 
 	int ileZagrac = ((rand() % 9) * 5) * MOC_KART;
@@ -330,9 +330,9 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 
 		std::cout << "ROUND 1" << std::endl;
 		if (coMasz == "nothing" && (rand() % 3) == 1)
-			return AI_ThrowCards;	// nic nie ma, wiec rzucam cards
+			return AI_ThrowCards;	// nothing, so I throw cards
 		if (coMasz == "nothing" && table->getPlayerRate() > 50 && (rand() % 2) == 1)
-			return AI_ThrowCards;	// nic nie ma, a zawodnik sporo postawil
+			return AI_ThrowCards;	// player put on the table, so you have to level up
 
 		if (table->getPlayerRate() > 10) {
 			// player coœ wrzuci³ na stó³ wiêc trzeba wyrównaæ
@@ -349,7 +349,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 			std::cout << "AI raises the bet on " << ileZagrac << std::endl;
 			table->AI_raiseBet(app, ileZagrac);
 			for (int i = 0; i < 5; i++) {
-				if (cardsDoWymiany[i] == -1) {
+				if (cardsToExchange[i] == -1) {
 					tempk++;
 					//					std::cout << "wymieniam cards" << std::endl;
 					opponent.setCard(i, deckOfcards[15 + i]);
@@ -363,7 +363,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 
 		// wymieñ ju¿ teraz cards, na nastêpn¹ turê.
 		for (int i = 0; i < 5; i++) {
-			if (cardsDoWymiany[i] == -1) {
+			if (cardsToExchange[i] == -1) {
 				tempk++;
 				opponent.setCard(i, deckOfcards[15 + i]);
 				//			cards[i+5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
@@ -410,12 +410,12 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 		std::cout << "odslaniam cards" << std::endl;
 		//			cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 		//		}
-		checkCards(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, cardsDoWymiany);
+		checkCards(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, cardsToExchange);
 		aiKarty = coMasz;
 		aiMoc = MOC_KART;
 		aifig1 = figura1;
 		aifig2 = figura2;
-		checkCards(player, opponent, "YOU", coMasz, figura1, figura2, MOC_KART, cardsDoWymiany);
+		checkCards(player, opponent, "YOU", coMasz, figura1, figura2, MOC_KART, cardsToExchange);
 		mojeKarty = coMasz;
 		tyMoc = MOC_KART;
 		mfig1 = figura1;
@@ -443,20 +443,20 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 				return Draw_Score;
 			}
 			else if (aifig1 < mfig1) {
-				std::cout << "YOU WON, LUCKY GUY.\n";
+				std::cout << "YOU WIN, LUCKY GUY.\n";
 				return Draw_Win;
 			}
 
 		}
 		else if (aiMoc < tyMoc) {
-			std::cout << "YOU WON, LUCKY GUY.\n";
+			std::cout << "YOU WIN, LUCKY GUY.\n";
 			return Draw_Win;
 		}
 	}
 
 	return 0;		// 0 - brak reakcji
 }
-void checkCards(Player& player, Opponent& opponent, std::string who, std::string& coMasz, int& figura1, int& figura2, int& MOC_KART, int* cardsDoWymiany) {
+void checkCards(Player& player, Opponent& opponent, std::string who, std::string& coMasz, int& figura1, int& figura2, int& MOC_KART, int* cardsToExchange) {
 	int delta = 13;		// przesuniêcie w kartach, figurach
 	int whatCards[13];		// jakie cards w jakich ilosciach wystepuja
 	coMasz = "nothing";
@@ -499,16 +499,16 @@ void checkCards(Player& player, Opponent& opponent, std::string who, std::string
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			if (i != j && temp[i] == temp[j])
-				cardsDoWymiany[i] = 0;
+				cardsToExchange[i] = 0;
 		}
 	}
 
 	//	for (int i = 0; i < 5; i++) {
 	//		std::cout << "karta =" << temp[i] << std::endl;
-	//		std::cout << i << "=" << cardsDoWymiany[i] << std::endl;
+	//		std::cout << i << "=" << cardsToExchange[i] << std::endl;
 	//	}
 
-		// sprawdz czy s¹ pary
+		// check for couples
 	for (int i = 0; i < 13; i++) {
 		if (whatCards[i] == 2) {
 			if (coMasz == "couple") {
@@ -521,7 +521,7 @@ void checkCards(Player& player, Opponent& opponent, std::string who, std::string
 				figura1 = i;
 				MOC_KART = 1;
 			}
-			//			std::cout << "para: " << i << std::endl;
+			//			std::cout << "couple: " << i << std::endl;
 		}
 	}
 	// are there triples
@@ -551,10 +551,10 @@ void checkCards(Player& player, Opponent& opponent, std::string who, std::string
 		}
 	}
 
-	// a mo¿e masz strit, lub prawie strit
-	std::sort(temp, temp + 5, std::greater < int >());		// posotuj tablice malejaco
+	// maybe you have strit
+	std::sort(temp, temp + 5, std::greater < int >());		// sort arrays in descending order
 
-															// jezeli cards koncza siê na asie to zwieksz wartosc najmniejszych
+	// if cards end with an ace it increases the value of the smallest
 	if (temp[0] == 12 && temp[1] == 11 && temp[2] == 10 && temp[3] == 9 && temp[4] == 0)
 		temp[4] = 8;
 	if (temp[0] == 12 && temp[1] == 11 && temp[2] == 10 && temp[3] == 1 && temp[4] == 0) {
@@ -588,7 +588,7 @@ void checkCards(Player& player, Opponent& opponent, std::string who, std::string
 			coMasz = "straight";
 			MOC_KART = 6;
 			for (int i = 0; i < 5; i++) {
-				cardsDoWymiany[i] = 0;
+				cardsToExchange[i] = 0;
 			}
 		}
 		if (ileWStrit == 3) {

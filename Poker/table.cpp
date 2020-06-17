@@ -109,7 +109,7 @@ void Table::dropCards(sf::RenderWindow& app) {
 void Table::AI_dropCards(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += Bank;
-	sf::String title = "The opponent drop the cards. You won " + to_string(Bank);
+	sf::String title = "The opponent drop the cards. You win " + to_string(Bank);
 	write(app, sf::Vector2f(370, 700), title);
 	app.display();
 	delay(500);
@@ -173,7 +173,7 @@ void Table::write(sf::RenderWindow& window, sf::Vector2f stringPosition, sf::Str
 	text.setString(string);
 	window.draw(text);
 }
-void Table::youwon(sf::RenderWindow& app) {
+void Table::youwin(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += Bank;
 	sf::String title = "You win " + to_string(Bank);

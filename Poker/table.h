@@ -25,7 +25,7 @@ public:
 	void spause(sf::RenderWindow&);
 	void sgameOver(sf::RenderWindow&);
 
-	void youwon(sf::RenderWindow&);
+	void youwin(sf::RenderWindow&);
 	void youlose(sf::RenderWindow&);
 	void draw(sf::RenderWindow&);
 
