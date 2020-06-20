@@ -338,7 +338,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 			// player coœ wrzuci³ na stó³ wiêc trzeba wyrównaæ
 			if (table->AI_toCall() == false) {
 				// za ma³o geldów
-	//			std::cout << "AI NIE wyrownuje stawki i rzuca kartami" << std::endl;
+	//			std::cout << "AI does not level the bet and throws the cards" << std::endl;
 				return AI_ThrowCards;
 			}
 		}
@@ -376,23 +376,23 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 	}
 
 	if (round == 2) {
-		std::cout << "drugie sprawdzenie kart" << std::endl;
-		// nic nie ma = rzuc cards
+		std::cout << "second check of cards" << std::endl;
+		// nothing = throw the cards
 		if (coMasz == "nothing" && (rand() % 2) == 1)
-			return AI_ThrowCards;	// nic nie ma, wiec rzucam cards
+			return AI_ThrowCards;	// there is nothing, I throw the cards
 
 		// wyrownaj stawke
 		if (table->AI_toCall() == false) {
 			// za ma³o geldów
-			std::cout << "round 2 AI NIE wyrownuje stawki i rzuca kartami" << std::endl;
+			std::cout << "round 2 AI does not level the bet and throws the cards" << std::endl;
 			return AI_ThrowCards;
 		}
 
-		// w zaleznosc od kart podbij stawke
+		// depending on the cards, raise the rate
 		std::cout << "ile zagrac =" << ileZagrac << std::endl;
 		if (ileZagrac > 0)
 		{
-			std::cout << "round2 AI podbija stawke o " << ileZagrac << std::endl;
+			std::cout << "round2 AI raises the bet on " << ileZagrac << std::endl;
 			table->AI_raiseBet(app, ileZagrac);
 			return AI_increasesRate;
 		}
@@ -406,8 +406,8 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 		int aiMoc, tyMoc;
 
 		//		for (int i = 0; i < 5; i++) {
-		std::cout << "ostateczne sprawdzenie kart" << std::endl;
-		std::cout << "odslaniam cards" << std::endl;
+		std::cout << "final check card" << std::endl;
+		std::cout << "disclose cards" << std::endl;
 		//			cards[i + 5].settings(sCard[opponent.getCard(i)], 445 + i * 80, 220);
 		//		}
 		checkCards(player, opponent, "AI", coMasz, figura1, figura2, MOC_KART, cardsToExchange);
@@ -420,7 +420,7 @@ int ai(sf::RenderWindow& app, Player& player, Opponent& opponent, Table *table, 
 		tyMoc = MOC_KART;
 		mfig1 = figura1;
 		mfig2 = figura2;
-		std::cout << "Wyniki to:" << std::endl;
+		std::cout << "The results are:" << std::endl;
 		std::cout << "AI:" << aiKarty << " moc=" << aiMoc << "  figury:" << aifig1 << "  " << aifig2 << std::endl;
 		std::cout << "YOU:" << mojeKarty << " moc=" << tyMoc << "  figury:" << mfig1 << "  " << mfig2 << std::endl;
 
@@ -573,25 +573,25 @@ void checkCards(Player& player, Opponent& opponent, std::string who, std::string
 		temp[4] = 8;
 	}
 
-	// check if you have straight
-	int ileWStrit = 0;
+	// check if you have straight hmstraight - how much in the straight
+	int hmStraight = 0;
 	if (coMasz == "nothing") {
 		for (int i = 0; i < 4; i++) {
 			int t1 = temp[i];
 			int t2 = temp[i + 1];
-			if (t1 - t2 == 1) ileWStrit++;
+			if (t1 - t2 == 1) hmStraight++;
 		}
 		int t1 = temp[4];		// check the last card with the first
 		int t2 = temp[0];
-		if (t1 - t2 == -12) ileWStrit++;		// 2 -> As - that's the difference 12
-		if (ileWStrit == 4) {
+		if (t1 - t2 == -12) hmStraight++;		// 2 -> As - that's the difference 12
+		if (hmStraight == 4) {
 			coMasz = "straight";
 			MOC_KART = 6;
 			for (int i = 0; i < 5; i++) {
 				cardsToExchange[i] = 0;
 			}
 		}
-		if (ileWStrit == 3) {
+		if (hmStraight == 3) {
 			coMasz = "almost straight";
 			// we ignore the straight and we exchange 4 cards randomly, but we don't throw them in the first round
 		}
