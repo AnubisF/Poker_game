@@ -98,7 +98,7 @@ void Table::newDealCards() {
 	OpponentCash -= 10;
 	Bank = PlayerRate + OponentRate;
 }
-void Table::dropCards(sf::RenderWindow& app) {
+void Table::foldCards(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	OpponentCash += Bank;
 	sf::String title = "You drop the cards. Opponent wins " + to_string(Bank);
@@ -106,7 +106,7 @@ void Table::dropCards(sf::RenderWindow& app) {
 	app.display();
 	//	delay(2500);
 }
-void Table::AI_dropCards(sf::RenderWindow& app) {
+void Table::AI_FoldCards(sf::RenderWindow& app) {
 	Bank = PlayerRate + OponentRate;
 	PlayerCash += Bank;
 	sf::String title = "The opponent drop the cards. You win " + to_string(Bank);

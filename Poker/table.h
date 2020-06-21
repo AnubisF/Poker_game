@@ -36,8 +36,8 @@ public:
 	void addToRate(int);
 	void AI_raiseBet(sf::RenderWindow&, int);
 	bool AI_toCall();
-	void AI_dropCards(sf::RenderWindow&);
-	void dropCards(sf::RenderWindow&);
+	void AI_FoldCards(sf::RenderWindow&);
+	void foldCards(sf::RenderWindow&);
 	void newDealCards();
 	void drawTable(sf::RenderWindow&);
 	// functions responsible for fonts and subtitles
