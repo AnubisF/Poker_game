@@ -43,7 +43,7 @@ int main()
 	app.setFramerateLimit(60);
 
 	Table *table = new Table();
-	table->setFont("BornAddict.ttf", 24, sf::Color::White);
+	table->setFont("sensation.ttf", 24, sf::Color::White);
 
 	Texture t2, tCards, tCardBack;
 	t2.loadFromFile("images/opponent.png");

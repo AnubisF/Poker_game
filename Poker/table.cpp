@@ -127,9 +127,9 @@ void Table::drawTable(sf::RenderWindow& app) {
 	write(app, sf::Vector2f(710, 520), "50");
 
 	sf::String title;
-	title = "PULA " + to_string(Bank) + "\n     Ty " + to_string(PlayerRate) + "\n      AI " + to_string(OponentRate);
+	title = "Bank " + to_string(Bank) + "\n     You " + to_string(PlayerRate) + "\n      AI " + to_string(OponentRate);
 	write(app, sf::Vector2f(150, 320), title);
-	title = "Ty " + to_string(PlayerCash) + "\nAi " + to_string(OpponentCash);
+	title = "You " + to_string(PlayerCash) + "\nAi " + to_string(OpponentCash);
 	write(app, sf::Vector2f(900, 320), title);
 
 	Vector2i mx = Mouse::getPosition(app);
