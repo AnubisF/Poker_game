@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="client\client.cpp" />
+    <ClCompile Include="server\server.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Poker.cpp" />
     <ClCompile Include="stdafx.cpp" />
