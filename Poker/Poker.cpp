@@ -78,10 +78,10 @@ int main()
 	int deckOfcards[52];			// deck with card numbers, 0-4 player, 5-9 and, 10+ to choose 
 
 	Util myUtil;		// mouse click zones
-	myUtil.setZone(1, 265, 645, 395, 695);			// fold cards
-	myUtil.setZone(2, 405, 645, 620, 695);			// check / pass
-	myUtil.setZone(3, 630, 645, 780, 695);			// exchange cards
-	myUtil.setZone(4, 790, 645, 930, 695);			// new cards deal
+	myUtil.setZone(1, 235, 645, 433, 695);			// fold cards
+	myUtil.setZone(2, 440, 645, 640, 695);			// check / pass
+	myUtil.setZone(3, 645, 645, 845, 695);			// exchange cards
+	myUtil.setZone(4, 855, 645, 1050, 695);			// new cards deal
 
 	myUtil.setZone(8, 410, 320, 475, 410);		// cards
 	myUtil.setZone(9, 490, 320, 560, 410);
